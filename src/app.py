@@ -9,6 +9,7 @@ from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User
+from routes import api
 #from models import Person
 
 app = Flask(__name__)
@@ -26,6 +27,11 @@ db.init_app(app)
 CORS(app)
 setup_admin(app)
 
+
+app.register_blueprint(api, url_prefix="/api")
+
+
+
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
@@ -38,7 +44,8 @@ def sitemap():
 
 @app.route('/user', methods=['GET'])
 def handle_hello():
-
+    person = User.query.get(1)
+    print(person.serialize())
     response_body = {
         "msg": "Hello, this is your GET /user response "
     }

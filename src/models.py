@@ -38,7 +38,7 @@ class Character(db.Model):
     quote: Mapped[str] = mapped_column(String(120),nullable=False)
     image: Mapped[str] = mapped_column(String(120),nullable=True)
     job: Mapped[str] = mapped_column(String(120),nullable=False)
-    age: Mapped[str] = mapped_column(String(120),nullable=False)
+    age: Mapped[int] = mapped_column(nullable=False)
     favorited_by: Mapped[list["User"]] = relationship(
         "User",
         secondary= favorite_table,
