@@ -52,5 +52,4 @@ class Character(db.Model):
             "image": self.image,
             "job": self.job,
             "age": self.age,
-            "favorited": self.favorited_by
         }
