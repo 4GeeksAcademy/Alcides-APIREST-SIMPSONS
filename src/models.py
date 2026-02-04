@@ -53,3 +53,14 @@ class Character(db.Model):
             "job": self.job,
             "age": self.age,
         }
+    
+class Location(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(120),nullable=False)
+    image: Mapped[str] = mapped_column(String(120),nullable=True)
+    def serialize (self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "image": self.image
+        }

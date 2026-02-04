@@ -45,41 +45,6 @@ def delete_user(user_id):
     return jsonify({"msg": "User deleted"}), 200
       
 
-
-@api.route("/characters", methods=["GET"])
-def get_characters():
-    characters = Character.query.all()
-    response = [character.serialize() for character in characters]
-    return jsonify(response), 200
-
-
-@api.route("/characters/<int:char_id>", methods=["GET"])
-def get_character(char_id):
-    character = Character.query.get(char_id)
-    if not character:
-        return jsonify({"error": "Character not found"}), 404
-    return jsonify(character.serialize()), 200
-
-
-@api.route("/characters", methods=["POST"])
-def create_character():
-    data = request.get_json()
-    if not data.get("name") or not data.get("quote") or not data.get("job") or not data.get("age"):
-        return jsonify({"error": "Missing fields"}), 400
-
-    new_character = Character(
-        name=data["name"],
-        quote=data["quote"],
-        image=data["image"],
-        job=data["job"],
-        age=data["age"]
-    )
-
-    db.session.add(new_character)
-    db.session.commit()
-    return jsonify(new_character.serialize()), 201
-
-
 @api.route("/characters/<int:char_id>", methods=["DELETE"])
 def delete_char(char_id):
     character = Character.query.get(char_id)
@@ -106,4 +71,16 @@ def add_fav(character_id):
         return jsonify({"msg": "User or character doesnt exist"})
     user.favorites.append(character)
     db.session.commit()
-    return jsonify({"msg": f"Character {character.name} added to favorites"}), 200
+    return jsonify({"msg": f"Character {character.name} added to favorites"}), 201
+
+@api.route("/favorite/character/<int:character_id>", methods=["DELETE"])
+def delete_fav(character_id):
+    user = User.query.get(1)
+    character = db.session.get(Character, character_id)
+    if not character or not user:
+        return jsonify({"msg": "User or character doesnt exist"})
+    if character not in user.favorites:
+        return jsonify({"msg": "This character is not in your favorites"}), 400
+    user.favorites.remove(character)
+    db.session.commit()
+    return jsonify({"msg": f" {character.name} has been deleted from favorites"}), 200

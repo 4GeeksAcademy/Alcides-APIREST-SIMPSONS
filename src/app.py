@@ -10,6 +10,8 @@ from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User, Character
 from routes import api
+from character_routes import character_api
+from location_routes import location_api
 #from models import Person
 
 app = Flask(__name__)
@@ -29,7 +31,8 @@ setup_admin(app)
 
 
 app.register_blueprint(api, url_prefix="/api")
-
+app.register_blueprint(character_api, url_prefix='/api')
+app.register_blueprint(location_api, url_prefix='/api')
 
 
 # Handle/serialize errors like a JSON object
