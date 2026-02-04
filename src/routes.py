@@ -80,11 +80,30 @@ def create_character():
     return jsonify(new_character.serialize()), 201
 
 
-
-
 @api.route("/characters/<int:char_id>", methods=["DELETE"])
 def delete_char(char_id):
     character = Character.query.get(char_id)
     if not character:
         return jsonify({"error": "Character not found"}), 404
     return jsonify({"msg": "Character deleted succesfully"}), 200
+
+
+@api.route("/users/favorites", methods=["GET"])
+def get_userfavs():
+    user = User.query.get(1)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+    user_data = user.serialize()
+    favorites = user_data["favorites"]
+    return jsonify(favorites), 200
+
+
+@api.route("/favorite/character/<int:character_id>", methods=["POST"])
+def add_fav(character_id):
+    user = User.query.get(1)
+    character = db.session.get(Character, character_id)
+    if not character or not user:
+        return jsonify({"msg": "User or character doesnt exist"})
+    user.favorites.append(character)
+    db.session.commit()
+    return jsonify({"msg": f"Character {character.name} added to favorites"}), 200
